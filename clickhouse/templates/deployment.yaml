@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse
+  template:
+    metadata:
+      labels:
+        app: clickhouse
+    spec:
+      containers:
+        - name: clickhouse
+          image: {{ .Values.clickhouse.image }}
+          ports:
+            - containerPort: 8123
+              name: http-default
+            - containerPort: 9000
+              name: clickhouse
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/clickhouse-server/config.d/storage.xml
+              subPath: storage.xml
+            - name: hot-cold-storage
+              mountPath: /mnt/clickhouse
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Values.configMapName }}
+        - name: hot-cold-storage
+          persistentVolumeClaim:
+            claimName: hot-cold-pvc

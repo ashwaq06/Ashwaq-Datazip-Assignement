@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.configMapName }}
+data:
+  storage.xml: |
+    <clickhouse>
+      <storage_configuration>
+        <policies>
+          <hot_cold_policy>
+            <move_factor>0.2</move_factor>
+            <volumes>
+              <hot>
+                <disk>hot_disk</disk>
+                <volume_name>hot_volume</volume_name>
+                <max_data_part_size>5368709120</max_data_part_size> <!-- 5GB  -->
+              </hot>
+              <cold>
+                <disk>cold_disk</disk>
+                <volume_name>cold_volume</volume_name>
+                <max_data_part_size>10737418240</max_data_part_size> <!-- 10GB -->
+              </cold>
+            </volumes>
+          </hot_cold_policy>
+        </policies>
+        <disks>
+          <hot_disk>
+            <path>/mnt/clickhouse/hot/</path>
+          </hot_disk>
+          <cold_disk>
+            <path>/mnt/clickhouse/cold/</path>
+          </cold_disk>
+        </disks>
+      </storage_configuration>
+    </clickhouse>

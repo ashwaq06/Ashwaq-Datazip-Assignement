@@ -1,0 +1,6 @@
+configMapName: clickhouse-configmap
+
+clickhouse:
+  image: clickhouse/clickhouse-server
+  hotStorageSize: "10Gi"
+  coldStorageSize: "20Gi"
